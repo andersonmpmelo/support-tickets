@@ -2,4 +2,3 @@ streamlit
 pandas
 bcrypt
 reportlab
-svglib
