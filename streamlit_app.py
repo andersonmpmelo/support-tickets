@@ -18,7 +18,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
 
 DB_PATH = "arp.db"
 APP_TITLE = "Sistema de Gestão de Contratos, Requisições e Catálogo"
-LOGO_PATH = "/mnt/data/logo-centra-de-compras.svg"
+LOGO_PATH = "https://centraldecompras.sead.pi.gov.br/wp-content/uploads/2023/10/logo-centra-de-compras.svg"
 
 COR_AZUL = "#164194"
 COR_AMARELO = "#F7B600"
