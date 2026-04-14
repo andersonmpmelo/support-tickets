@@ -1,3 +1,4 @@
+# ====== Pacotes importantes
 import streamlit as st
 import sqlite3
 import pandas as pd
@@ -16,6 +17,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
 
+# ===== Banco de Dados + Identidade Visual do Projeto
 DB_PATH = "arp.db"
 APP_TITLE = "Sistema de Gestão de Contratos, Requisições e Catálogo"
 LOGO_PATH = "https://centraldecompras.sead.pi.gov.br/wp-content/uploads/2023/10/logo-centra-de-compras.svg"
@@ -32,9 +34,7 @@ COR_BORDA = "#D9E1F2"
 st.set_page_config(page_title=APP_TITLE, layout="wide")
 
 
-# =========================================================
-# HELPERS
-# =========================================================
+# ====== Convertendo para medidas ptbr
 def brl(valor):
     try:
         valor = float(valor or 0)
@@ -200,9 +200,7 @@ def recalc_item_balance(item_id):
     conn.commit()
 
 
-# =========================================================
-# PDF
-# =========================================================
+# ==== Exportar PDF (atesto ou certificado)
 def _pdf_add_logo(elements, styles):
     try:
         from svglib.svglib import svg2rlg
@@ -290,10 +288,7 @@ def gerar_pdf_consulta_contratos(df, filtros_texto, texto_inexistencia=None, jus
     buffer.seek(0)
     return buffer.getvalue()
 
-
-# =========================================================
-# ESTILO
-# =========================================================
+# ===== Design e estilo das páginas
 def apply_custom_css():
     st.markdown(f"""
     <style>
@@ -431,9 +426,7 @@ def section_box_end():
     st.markdown('</div>', unsafe_allow_html=True)
 
 
-# =========================================================
-# BANCO DE DADOS
-# =========================================================
+# ===== Conexão e criação das Tabelas do banco
 conn = conectado()
 cursor = conn.cursor()
 
@@ -580,9 +573,7 @@ if "nivel" not in st.session_state:
     st.session_state.nivel = None
 
 
-# =========================================================
-# PERMISSÕES
-# =========================================================
+# ====== Funil das permissões dos usuários
 def is_admin():
     return st.session_state.logado and st.session_state.nivel == 0
 
@@ -645,9 +636,8 @@ def login_sidebar():
                 st.rerun()
 
 
-# =========================================================
-# CONSULTAS
-# =========================================================
+# ====== Daqui para frente são os módulos, não consegui agrupar alguns
+# ======= Módulo de consultas dos Contratos e Itens
 def carregar_contratos():
     df = pd.read_sql("""
         SELECT id, cod_unico, numero_sei, inicio_vigencia, fim_vigencia, titulo, status
@@ -871,9 +861,7 @@ def card_contrato_html(numero_sei, titulo, inicio, fim, status):
     """
 
 
-# =========================================================
-# APP
-# =========================================================
+# ====== Módulo de ARP e requisição
 apply_custom_css()
 login_sidebar()
 render_header()
@@ -899,9 +887,7 @@ else:
 menu = st.sidebar.selectbox("Menu", opcoes_menu)
 
 
-# =========================================================
-# DASHBOARD
-# =========================================================
+# ===== Módulo inicial de DASHBOARD
 if menu == "Dashboard":
     if not pode_editar_dados():
         st.error("Somente usuários nível 0 e 1 podem acessar o Dashboard.")
@@ -1028,9 +1014,7 @@ if menu == "Dashboard":
         st.bar_chart(graf)
     section_box_end()
 
-# =========================================================
-# CONTRATOS
-# =========================================================
+# ==== Módulo de consulta e cadastro de CONTRATOS
 if menu == "Contratos":
     st.title("Consulta de Contratos e Itens")
     st.caption("Consulte contratos e itens vinculados, com busca inteligente por grafia semelhante.")
